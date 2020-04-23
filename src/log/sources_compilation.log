@@ -1,0 +1,12 @@
++++ Cleaning All ... 
++++ Compiling All ... 
+gcc -O4  -c covid_fastq.c -o covid_fastq.o
+gcc -O4  -c covid_frequ.c -o covid_frequ.o
+gcc -O4  -c covidSNP.c -o covidSNP.o
+gcc -O4  -c covidPileup.c -o covidPileup.o
+covidPileup.c: In function ‘main’:
+covidPileup.c:395:12: warning: ignoring return value of ‘chdir’, declared with attribute warn_unused_result [-Wunused-result]
+gcc -O4  -c fast.c -o fast.o
+for exe in covid_fastq covid_frequ covidSNP covidPileup;  do gcc -O4  -o $exe $exe.o fast.o -lm -pthread -lz; cp $exe covid-bin/.; done
++++ Cleaning Up ... 
+All Done 
