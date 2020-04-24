@@ -137,6 +137,11 @@ int main(int argc, char **argv)
          sscanf(argv[++i],"%d",&n_nodes);
          args=args+2;
        }
+       else if(!strcmp(argv[i],"-length"))
+       {
+         sscanf(argv[++i],"%d",seq_len);
+         args=args+2;
+       }
        else if(!strcmp(argv[i],"-SNP"))
        {
          sscanf(argv[++i],"%s",snpname);
