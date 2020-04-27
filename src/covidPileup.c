@@ -54,7 +54,7 @@ static int *readIndex;
 
 /* SSAS default parameters   */
 static int n_group=0;
-static int seq_len=40000;
+static int seq_len = 40000;
 static int file_tag = 0;
 static int run_align = 1;
 static int plot_SNP = 0;
@@ -137,11 +137,6 @@ int main(int argc, char **argv)
          sscanf(argv[++i],"%d",&n_nodes);
          args=args+2;
        }
-       else if(!strcmp(argv[i],"-length"))
-       {
-         sscanf(argv[++i],"%d",seq_len);
-         args=args+2;
-       }
        else if(!strcmp(argv[i],"-SNP"))
        {
          sscanf(argv[++i],"%s",snpname);
@@ -150,6 +145,11 @@ int main(int argc, char **argv)
        else if(!strcmp(argv[i],"-GAP"))
        {
          sscanf(argv[++i],"%s",gapname);
+         args=args+2;
+       }
+       else if(!strcmp(argv[i],"-length"))
+       {
+         sscanf(argv[++i],"%d",&seq_len);
          args=args+2;
        }
        else if(!strcmp(argv[i],"-help"))
@@ -344,7 +344,11 @@ int main(int argc, char **argv)
       RunSystemCommand(syscmd);
 
       memset(syscmd,'\0',2000);
-      sprintf(syscmd,"bash %s/plot-pileupSNP.sh",bindir);
+      sprintf(syscmd,"%s/covid_comms -plot 1 frequeSNP.dat plot-pileupSNP.sh > try.out",bindir);
+      RunSystemCommand(syscmd);
+
+      memset(syscmd,'\0',2000);
+      sprintf(syscmd,"bash plot-pileupSNP.sh");
       RunSystemCommand(syscmd);
 
       memset(syscmd,'\0',2000);
@@ -356,7 +360,11 @@ int main(int argc, char **argv)
       RunSystemCommand(syscmd);
 
       memset(syscmd,'\0',2000);
-      sprintf(syscmd,"bash %s/plot-frequeSNP.sh",bindir);
+      sprintf(syscmd,"%s/covid_comms -plot 2 frequeSNP.dat plot-frequeSNP.sh > try.out",bindir);
+      RunSystemCommand(syscmd);
+
+      memset(syscmd,'\0',2000);
+      sprintf(syscmd,"bash plot-frequeSNP.sh");
       RunSystemCommand(syscmd);
 
       memset(syscmd,'\0',2000);
@@ -371,7 +379,11 @@ int main(int argc, char **argv)
       RunSystemCommand(syscmd);
 
       memset(syscmd,'\0',2000);
-      sprintf(syscmd,"bash %s/plot-pileupGAP.sh",bindir);
+      sprintf(syscmd,"%s/covid_comms -plot 3 frequeSNP.dat plot-pileupGAP.sh > try.out",bindir);
+      RunSystemCommand(syscmd);
+
+      memset(syscmd,'\0',2000);
+      sprintf(syscmd,"bash plot-pileupGAP.sh");
       RunSystemCommand(syscmd);
 
       memset(syscmd,'\0',2000);
@@ -383,7 +395,11 @@ int main(int argc, char **argv)
       RunSystemCommand(syscmd);
 
       memset(syscmd,'\0',2000);
-      sprintf(syscmd,"bash %s/plot-frequeGAP.sh",bindir);
+      sprintf(syscmd,"%s/covid_comms -plot 4 frequeSNP.dat plot-frequeGAP.sh > try.out",bindir);
+      RunSystemCommand(syscmd);
+
+      memset(syscmd,'\0',2000);
+      sprintf(syscmd,"bash plot-frequeGAP.sh");
       RunSystemCommand(syscmd);
 
       memset(syscmd,'\0',2000);

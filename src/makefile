@@ -3,7 +3,7 @@ CC= gcc
 CFLAGS= -O4
 LFLAGS= -lm -pthread -lz
 
-SOURCES=covid_fastq.c covid_frequ.c covidSNP.c covidPileup.c
+SOURCES=covid_fastq.c covid_frequ.c covid_comms.c covidSNP.c covidPileup.c
 
 OBJS = $(patsubst %.c,%.o,$(SOURCES)) fast.o
 EXECS = $(patsubst %.c,%,$(SOURCES))
