@@ -141,7 +141,7 @@ int main(int argc, char **argv)
        {
          rate = (j-i);
 //         rate = rate/num_base;
-         if(gap_flag == 1)
+         if(gap_flag == 0)
            rate = rate/num_samples;
          else
            rate = rate/nSeq;
