@@ -40,14 +40,14 @@ int main(int argc, char **argv)
     int i=0,j=0,k,args=0,num_steps,nSeq,nRead,num_samples;
     int *s_len,BAR = 0,nstep = 0,stopflag;
     char line[500],tempc1[100];
-    char KKK1[100],KKK2[100],KKK3[100],KKK4[100],KKK5[100],KKK6[100],KKK0[100];
+    char KKK1[100],KKK2[100],KKK3[100],KKK4[100],KKK5[100],KKK6[100],KKK7[100],KKK0[100];
     FILE *namef;
     long num_base,base;
     double rate;
 
     if(argc < 2)
     {
-      printf("Usage: %s -gap 0 <input frequence file> <output frequency file>\n",argv[0]);
+      printf("Usage: %s -plot 1 <input frequence file> <output frequency file>\n",argv[0]);
       exit(1);
     }
 
@@ -77,7 +77,9 @@ int main(int argc, char **argv)
     while(!feof(namef))
     {
       if(fgets(line,500,namef) == NULL)
-        printf("Data input file problem! %s\n",argv[args]);
+      {
+//        printf("Data input file problem! %s\n",argv[args]);
+      }
       if(feof(namef)) break;
       nRead++;
     }
@@ -94,13 +96,13 @@ int main(int argc, char **argv)
     {
       strcpy(KKK0,"set logscale y"); 
       strcpy(KKK1,"set terminal svg");     
-      strcpy(KKK2,"set style line 1 lt 1 lw 2 pt 2 linecolor rgb \\\"red\\\"");     
-      strcpy(KKK3,"set style line 2 lt 1 lw 2 pt 2 linecolor rgb \\\"blue\\\"");     
+      strcpy(KKK2,"set style line 1 lt 1 lw 3 pt 2 linecolor rgb \\\"red\\\"");     
+      strcpy(KKK3,"set style line 2 lt 1 lw 3 pt 2 linecolor rgb \\\"blue\\\"");     
       strcpy(KKK4,"set xlabel \\\"COVID-19 genome coordinates\\\"");     
       strcpy(KKK5,"set ylabel \\\"SNP Pileup Frequency / 100 \\\"");     
       strcpy(KKK6,"plot [ 0 to 30000 ] [ 1 to 100 ]");
  
-      fprintf(namef,"#!/bin/tcsh\n");
+      fprintf(namef,"#!/bin/bash\n");
       fprintf(namef,"\n"); 
       fprintf(namef,"function plotcmd\n");
       fprintf(namef,"\{\n"); 
@@ -110,7 +112,8 @@ int main(int argc, char **argv)
       fprintf(namef,"printf \"%s\\n\"\n",KKK3);
       fprintf(namef,"printf \"%s\\n\"\n",KKK4);
       fprintf(namef,"printf \"%s\\n\"\n",KKK5);
-      fprintf(namef,"printf \"%s \\\"%s\\\" title \\\"%s \\\" %s\\\"%s\\\" title \\\"%s %d %s \\\" %s\" \n",KKK6,"public-pileupSNP.freq","COVID-19 Public: 368 genomes","with lines ls 1, ","sample-pileupSNP.freq","COVID-19 Sample: ",nSeq," genomes "," with lines ls 2");
+//      fprintf(namef,"printf \"%s \\\"%s\\\" title \\\"%s \\\" %s\\\"%s\\\" title \\\"%s %d %s \\\" %s\" \n",KKK6,"public-pileupSNP.freq","COVID-19 Public (March 2020): 368 genomes","with lines ls 1, ","sample-pileupSNP.freq","COVID-19 Sample: ",nSeq," genomes "," with lines ls 2");
+      fprintf(namef,"printf \"%s \\\"%s\\\" title \\\"%s %d %s \\\" %s\" \n",KKK6,"sample-pileupSNP.freq","COVID-19 Sample: ",nSeq," genomes "," with lines ls 2");
       fprintf(namef,"}\n");
       fprintf(namef,"plotcmd | gnuplot > data.svg\n");
       fprintf(namef,"inkscape -z --export-text-to-path --export-pdf data.pdf data.svg\n");
@@ -128,7 +131,7 @@ int main(int argc, char **argv)
       strcpy(KKK5,"set ylabel \\\"SNP Frequency / 100\\\"");     
       strcpy(KKK6,"plot [ 0 to 20 ] [ 1 to 100 ]");
  
-      fprintf(namef,"#!/bin/tcsh\n");
+      fprintf(namef,"#!/bin/bash\n");
       fprintf(namef,"\n"); 
       fprintf(namef,"function plotcmd\n");
       fprintf(namef,"\{\n"); 
@@ -138,7 +141,7 @@ int main(int argc, char **argv)
       fprintf(namef,"printf \"%s\\n\"\n",KKK3);
       fprintf(namef,"printf \"%s\\n\"\n",KKK4);
       fprintf(namef,"printf \"%s\\n\"\n",KKK5);
-      fprintf(namef,"printf \"%s \\\"%s\\\" title \\\"%s \\\" %s\\\"%s\\\" title \\\"%s %d %s \\\" %s\" \n",KKK6,"public-frequeSNP.freq","COVID-19 Public: 368 genomes","with lines ls 1, ","sample-frequeSNP.freq","COVID-19 Sample: ",nSeq," genomes "," with lines ls 2");
+      fprintf(namef,"printf \"%s \\\"%s\\\" title \\\"%s \\\" %s\\\"%s\\\" title \\\"%s %d %s \\\" %s\" \n",KKK6,"public-frequeSNP.freq","COVID-19 Public (March 2020): 368 genomes","with lines ls 1, ","sample-frequeSNP.freq","COVID-19 Sample: ",nSeq," genomes "," with lines ls 2");
       fprintf(namef,"}\n");
       fprintf(namef,"plotcmd | gnuplot > data.svg\n");
       fprintf(namef,"inkscape -z --export-text-to-path --export-pdf data.pdf data.svg\n");
@@ -156,7 +159,7 @@ int main(int argc, char **argv)
       strcpy(KKK5,"set ylabel \\\"GAP Pileup Frequency / 100 \\\"");     
       strcpy(KKK6,"plot [ 0 to 30000 ] [ 1 to 100 ]");
  
-      fprintf(namef,"#!/bin/tcsh\n");
+      fprintf(namef,"#!/bin/bash\n");
       fprintf(namef,"\n"); 
       fprintf(namef,"function plotcmd\n");
       fprintf(namef,"\{\n"); 
@@ -166,7 +169,7 @@ int main(int argc, char **argv)
       fprintf(namef,"printf \"%s\\n\"\n",KKK3);
       fprintf(namef,"printf \"%s\\n\"\n",KKK4);
       fprintf(namef,"printf \"%s\\n\"\n",KKK5);
-      fprintf(namef,"printf \"%s \\\"%s\\\" title \\\"%s \\\" %s\\\"%s\\\" title \\\"%s %d %s \\\" %s\" \n",KKK6,"public-pileupGAP.freq","COVID-19 Public: 368 genomes","with lines ls 1, ","sample-pileupGAP.freq","COVID-19 Sample: ",nSeq," genomes "," with lines ls 2");
+      fprintf(namef,"printf \"%s \\\"%s\\\" title \\\"%s \\\" %s\\\"%s\\\" title \\\"%s %d %s \\\" %s\" \n",KKK6,"public-pileupGAP.freq","COVID-19 Public (March 2020): 368 genomes","with lines ls 1, ","sample-pileupGAP.freq","COVID-19 Sample: ",nSeq," genomes "," with lines ls 2");
       fprintf(namef,"}\n");
       fprintf(namef,"plotcmd | gnuplot > data.svg\n");
       fprintf(namef,"inkscape -z --export-text-to-path --export-pdf data.pdf data.svg\n");
@@ -184,7 +187,7 @@ int main(int argc, char **argv)
       strcpy(KKK5,"set ylabel \\\"GAP Frequency / 100\\\"");     
       strcpy(KKK6,"plot [ 0 to 20 ] [ 1 to 100 ]");
  
-      fprintf(namef,"#!/bin/tcsh\n");
+      fprintf(namef,"#!/bin/bash\n");
       fprintf(namef,"\n"); 
       fprintf(namef,"function plotcmd\n");
       fprintf(namef,"\{\n"); 
@@ -194,7 +197,65 @@ int main(int argc, char **argv)
       fprintf(namef,"printf \"%s\\n\"\n",KKK3);
       fprintf(namef,"printf \"%s\\n\"\n",KKK4);
       fprintf(namef,"printf \"%s\\n\"\n",KKK5);
-      fprintf(namef,"printf \"%s \\\"%s\\\" title \\\"%s \\\" %s\\\"%s\\\" title \\\"%s %d %s \\\" %s\" \n",KKK6,"public-frequeGAP.freq","COVID-19 Public: 368 genomes","with lines ls 1, ","sample-frequeGAP.freq","COVID-19 Sample: ",nSeq," genomes "," with lines ls 2");
+      fprintf(namef,"printf \"%s \\\"%s\\\" title \\\"%s \\\" %s\\\"%s\\\" title \\\"%s %d %s \\\" %s\" \n",KKK6,"public-frequeGAP.freq","COVID-19 Public (March 2020): 368 genomes","with lines ls 1, ","sample-frequeGAP.freq","COVID-19 Sample: ",nSeq," genomes "," with lines ls 2");
+      fprintf(namef,"}\n");
+      fprintf(namef,"plotcmd | gnuplot > data.svg\n");
+      fprintf(namef,"inkscape -z --export-text-to-path --export-pdf data.pdf data.svg\n");
+      fprintf(namef,"gs -r600 -dNOPAUSE -dBATCH -sDEVICE=png256 -sOutputFile=%s.png data.pdf\n","data");
+      fprintf(namef,"\n"); 
+      fprintf(namef,"\n");
+    }
+    else if(plot_flag == 5)
+    {
+      strcpy(KKK0,"set terminal svg"); 
+      strcpy(KKK2,"set style line 1 lt 1 lw 1 pt 5 linecolor rgb \\\"red\\\"");     
+      strcpy(KKK3,"set style line 2 lt 1 lw 1 pt 7 linecolor rgb \\\"blue\\\"");     
+      strcpy(KKK4,"set style line 3 lt 1 lw 1 pt 9 linecolor rgb \\\"green\\\"");     
+      strcpy(KKK5,"set xlabel \\\"COVID-19 genome coordinates\\\"");     
+      strcpy(KKK6,"set ylabel \\\"Unique SNPs - Number of Samples\\\"");     
+      strcpy(KKK7,"plot [ 0 to 30000 ] [ 1 to 100 ]");
+ 
+      fprintf(namef,"#!/bin/bash\n");
+      fprintf(namef,"\n"); 
+      fprintf(namef,"function plotcmd\n");
+      fprintf(namef,"\{\n"); 
+      fprintf(namef,"printf \"%s\\n\"\n",KKK0);
+//      fprintf(namef,"printf \"%s\\n\"\n",KKK1);
+      fprintf(namef,"printf \"%s\\n\"\n",KKK2);
+      fprintf(namef,"printf \"%s\\n\"\n",KKK3);
+      fprintf(namef,"printf \"%s\\n\"\n",KKK4);
+      fprintf(namef,"printf \"%s\\n\"\n",KKK5);
+      fprintf(namef,"printf \"%s\\n\"\n",KKK6);
+      fprintf(namef,"printf \"%s \\\"%s\\\" title \\\"%s \\\" %s\\\"%s\\\" title \\\"%s\\\" %s\\\"%s\\\" title \\\"%s\\\" %s\"\n",KKK7,"uniqsnp-usa.dat","Unique SNPs - USA","with points ls 1,","uniqsnp-uk.dat","Unique SNPs - UK "," with points ls 2,","uniqsnp-eu.dat","Unique SNPs - EU ","with points ls 3");
+      fprintf(namef,"}\n");
+      fprintf(namef,"plotcmd | gnuplot > data.svg\n");
+      fprintf(namef,"inkscape -z --export-text-to-path --export-pdf data.pdf data.svg\n");
+      fprintf(namef,"gs -r600 -dNOPAUSE -dBATCH -sDEVICE=png256 -sOutputFile=%s.png data.pdf\n","data");
+      fprintf(namef,"\n"); 
+      fprintf(namef,"\n");
+    }
+    else if(plot_flag == 6)
+    {
+      strcpy(KKK0,"set terminal svg"); 
+      strcpy(KKK2,"set style line 1 lt 1 lw 1 pt 5 linecolor rgb \\\"red\\\"");     
+      strcpy(KKK3,"set style line 2 lt 1 lw 1 pt 7 linecolor rgb \\\"blue\\\"");     
+      strcpy(KKK4,"set style line 3 lt 1 lw 1 pt 9 linecolor rgb \\\"green\\\"");     
+      strcpy(KKK5,"set xlabel \\\"COVID-19 genome coordinates\\\"");     
+      strcpy(KKK6,"set ylabel \\\"Country SNPs - Number of Samples\\\"");     
+      strcpy(KKK7,"plot [ 0 to 30000 ] [ 1 to 500 ]");
+ 
+      fprintf(namef,"#!/bin/bash\n");
+      fprintf(namef,"\n"); 
+      fprintf(namef,"function plotcmd\n");
+      fprintf(namef,"\{\n"); 
+      fprintf(namef,"printf \"%s\\n\"\n",KKK0);
+//      fprintf(namef,"printf \"%s\\n\"\n",KKK1);
+      fprintf(namef,"printf \"%s\\n\"\n",KKK2);
+      fprintf(namef,"printf \"%s\\n\"\n",KKK3);
+      fprintf(namef,"printf \"%s\\n\"\n",KKK4);
+      fprintf(namef,"printf \"%s\\n\"\n",KKK5);
+      fprintf(namef,"printf \"%s\\n\"\n",KKK6);
+      fprintf(namef,"printf \"%s \\\"%s\\\" title \\\"%s \\\" %s\\\"%s\\\" title \\\"%s\\\" %s\\\"%s\\\" title \\\"%s\\\" %s\"\n",KKK7,"country-usa.dat","Country SNPs - USA","with points ls 1,","country-uk.dat","Country SNPs - UK "," with points ls 2,","country-eu.dat","Country SNPs - EU ","with points ls 3");
       fprintf(namef,"}\n");
       fprintf(namef,"plotcmd | gnuplot > data.svg\n");
       fprintf(namef,"inkscape -z --export-text-to-path --export-pdf data.pdf data.svg\n");
