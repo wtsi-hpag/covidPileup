@@ -30,7 +30,7 @@ The genome aligner BWA (http://bio-bwa.sourceforge.net) and SMALT (http://www.sa
 
              GAP:          output 2 image files on GAP pileup [ default = not plot ]
                            5. sample-pileup.pileupGAP.png; 6. sample-pileup.frequeGAP.png
-	     country       specific SNPs in the country [ default = UK ]
+	         country       specific SNPs in the country [ default = UK ]
                            "EU" and Europen countries like "France", "Italy" et al should work;
                            "UK" and "England", "Scotland", "Wales" et al should work;
 
@@ -41,15 +41,16 @@ The genome aligner BWA (http://bio-bwa.sourceforge.net) and SMALT (http://www.sa
                   
 #### Run example with reference.fasta COVID-19_genomes.fasta 
 
-           $ /full/path/to/covidPileup/src/covidPileup -nodes 30 -SNP plot -GAP plot -country USA\
+           $ /full/path/to/covidPileup/src/covidPileup -nodes 30 -SNP plot -GAP plot -country UK\
 		 reference.fasta COVID-19_genomes.fasta sample-pileup
 	   
 or using SMALT 
-           $ /full/path/to/covidPileup/src/covidPileup -nodes 30 -SNP plot -GAP plot -country USA\
+           $ /full/path/to/covidPileup/src/covidPileup -nodes 30 -SNP plot -GAP plot -country UK\
 		 -align smalt reference.fasta COVID-19_genomes.fasta sample-pileup
 	    
 #### Data input fasta files 
      The names in the fasta file have to follow the format used by Gisaid
+
      Australia/VIC110/2020
      USA/WA-UW-4032/2020
      England/20124095202/2020
