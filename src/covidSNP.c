@@ -57,6 +57,7 @@ int main(int argc, char **argv)
     FILE *fp,*namef,*namef2;
     long dataSize,totalBases;
     int i,j,k,m,n,nSeq,nRead,args,num_SNPs=0,num_GAPs=0;
+    int ances_flag,proce_flag;
     int nseq,num_align,*ctg_index,*ctg_hitst,*cig_base,*cig_code,*snp_offset;
     fasta *seq,*seqp;
     char *ptr,**ctgname,line[100000],cigarline[10000],*seqline,*read_base,*refe_base;
@@ -75,9 +76,11 @@ int main(int argc, char **argv)
 //        printf("System command error:\n);
     }
 
+    ances_flag = 0;
+    proce_flag = 1;
     if(argc < 2)
     {
-      printf("Usage: %s <-name contigs> <input fastq file> <output fasta file>\n",argv[0]);
+      printf("Usage: %s <-length 40000> <-ancestry 0> <input_reference_fasta> <alignment_file> <output_SNP_file>\n",argv[0]);
       exit(1);
     }
 
@@ -88,6 +91,11 @@ int main(int argc, char **argv)
        if(!strcmp(argv[i],"-mod"))
        {
          sscanf(argv[++i],"%d",&IMOD); 
+         args=args+2;
+       }
+       else if(!strcmp(argv[i],"-ancestry"))
+       {
+         sscanf(argv[++i],"%d",&ances_flag);
          args=args+2;
        }
        else if(!strcmp(argv[i],"-length"))
@@ -201,7 +209,17 @@ int main(int argc, char **argv)
       if(feof(namef)) break;
       strcpy(line2,line);
       strcpy(line3,line);
-//      if((strncmp(line,"Covid",5))==0)
+      proce_flag = 1;
+      if(ances_flag == 0)
+      {
+        if(((strncmp(line,"bat",3))==0)||((strncmp(line,"pan",3))==0))
+          proce_flag = 0;
+        else
+          proce_flag = 1; 
+      }
+      else
+        proce_flag = 1; 
+      if(proce_flag)
       { 
         for(ptr=strtok(line," ");ptr!=NULL;ptr=strtok((char *)NULL," "),nPair++)
         {
@@ -353,6 +371,7 @@ int main(int argc, char **argv)
                   gbase = 0;
                 if(refe_base[n] == '-')
                   gbase = 0;
+//	          printf("    PPP %d %d %d %s %c %c %d\n",num_align,n,snp_offset[n],ctgname[num_align],refe_base[n],read_base[n],ctg_hitst[num_align]);
                 if((refe_base[n]!=read_base[n])&&(gbase == 1)&&(seq_len > 20000)&&(snp_offset[n] > ctg_hitst[num_align]))
                 {
 	          printf("    SNP %d %d %d %s %c %c %d\n",num_align,n,snp_offset[n],ctgname[num_align],refe_base[n],read_base[n],ctg_hitst[num_align]);
