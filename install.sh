@@ -43,6 +43,36 @@ else
     rm -rf $projdir/src/bwa/
 fi
 
+
+##### Download and install SMALT ######
+echo; echo "Downloading and installing Smalt"
+if [[ ! -s $bindir/smalt ]]; then
+   
+    if [[ ! -d $projdir/src/smalt-0.7.4 ]]; then
+        cd $projdir/src/
+        wget ftp://ftp.sanger.ac.uk/pub/resources/software/smalt/smalt-0.7.4.tgz &> $projdir/src/log/smalt_wget.log
+        tar -xvzf smalt-0.7.4.tgz &> $projdir/src/log/smalt_untar.log
+        rm -f smalt-0.7.4.tgz
+    fi
+
+    cp $projdir/src/smalt-0.7.4/smalt_x86_64 $bindir/smalt
+fi
+if  [[ ! -s $bindir/smalt ]]; then 
+    echo " !! Error: smalt not installed properly!"; 
+    echo "   Please check the log files:" 
+    echo "   Check if smalt was downloaded properly:" $projdir/src/log/smalt_wget.log 
+    echo "   Check if the folder was uncompressed properly:" $projdir/src/log/smalt_untar.log
+
+    # Cleaning up       
+    rm -rf $projdir/src/smalt-0.7.4/ $bindir/smalt
+
+    errs=$(($errs+1))
+else
+    echo " Smalt succesfully installed!"
+    rm -rf $projdir/src/smalt-0.7.4/
+fi
+
+
 ###### Compile covidPileup sources ######
 
 echo; echo "Compiling covidPileup sources"
