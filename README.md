@@ -5,7 +5,7 @@ Pipeline for building SNP and GAP pileup from multiple COVID-19 whole genome seq
 
     $ git clone  https://github.com/wtsi-hpag/covidPileup.git 
     $ cd covidPileup 
-    $ ./install.sh
+    $ bash install.sh
 		
 If everything compiled successfully you must see the final comment: 
 		"Congrats: installation successful!"		
