@@ -3,7 +3,7 @@ CC= gcc
 CFLAGS= -O4
 LFLAGS= -lm -pthread -lz
 
-SOURCES=covid_fastq.c covid_frequ.c covid_comms.c covidSNP.c covidPileup.c
+SOURCES=covid_fastq.c covid_frequ.c covid_comms.c covid_names.c covid_nation.c covidSNP.c covidPangenome.c covidPileup.c
 
 OBJS = $(patsubst %.c,%.o,$(SOURCES)) fast.o
 EXECS = $(patsubst %.c,%,$(SOURCES))
@@ -31,6 +31,8 @@ clean:
 	@rm -f $(EXECS)
 	@rm -f $(OBJS)
 	@cp covid-bin/covidPileup .
+	@cp covid-bin/covidPangenome .
+	@cp covid-bin/covid_nation .
 
 cleanall: 
 	@echo '+++ Cleaning All ... '
