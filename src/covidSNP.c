@@ -51,13 +51,14 @@ static int IMOD=0;
 static int len_covid=40000;
 static int set_qual=15;
 static int set_len=10;
+static int ances_flag =0;
 
 int main(int argc, char **argv)
 {
     FILE *fp,*namef,*namef2;
     long dataSize,totalBases;
     int i,j,k,m,n,nSeq,nRead,args,num_SNPs=0,num_GAPs=0;
-    int ances_flag,proce_flag;
+    int proce_flag;
     int nseq,num_align,*ctg_index,*ctg_hitst,*cig_base,*cig_code,*snp_offset;
     fasta *seq,*seqp;
     char *ptr,**ctgname,line[100000],cigarline[10000],*seqline,*read_base,*refe_base;

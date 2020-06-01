@@ -61,6 +61,7 @@ static int plot_SNP = 0;
 static int plot_GAP = 0;
 static int min_len = 3000;
 static int sam_flag = 0;
+static int ances_flag = 0;
 
 typedef struct
 {
@@ -90,14 +91,6 @@ int main(int argc, char **argv)
     FILE *fp,*namef,*namef2;
     int size_file;
     int m_score,n_nodes,n_debug,num_sigma;
-    void decodeReadpair(int nSeq);
-    void HashFasta_Head(int i, int nSeq);
-    void HashFasta_Table(int i, int nSeq);
-    void Search_SM(fasta *seq,int nSeq);
-    void Assemble_SM(int arr,int brr);
-    void Read_Index(int nSeq,char *namefile);
-    void Read_Group(fasta *seq,int nSeq,int nRead,int cindex);
-    void File_Output(int aaa);
     void Memory_Allocate(int arr);
     char tempa[2000],tempc[2000],syscmd[2000],workdir[2000];
     char file_tarseq[2000],file_pileup[2000],file_snpfrq[2000],file_datas[2000],file_ctname[2000],file_ctspec[2000];
@@ -143,6 +136,11 @@ int main(int argc, char **argv)
        {
          memset(toolname,'\0',500);
          sscanf(argv[++i],"%s",toolname);
+         args=args+2;
+       }
+       else if(!strcmp(argv[i],"-ancestry"))
+       {
+         sscanf(argv[++i],"%d",&ances_flag);
          args=args+2;
        }
        else if(!strcmp(argv[i],"-SNP"))
@@ -319,7 +317,7 @@ int main(int argc, char **argv)
 
     memset(syscmd,'\0',2000);
     printf("%s/covidSNP -length %d tarseq.fastq align.dat pileup.dat > try.out",bindir,seq_len);
-    sprintf(syscmd,"%s/covidSNP -length %d tarseq.fastq align.dat pileup.out > try.out",bindir,seq_len);
+    sprintf(syscmd,"%s/covidSNP -length %d -ancestry %d tarseq.fastq align.dat pileup.out > try.out",bindir,seq_len,ances_flag);
     RunSystemCommand(syscmd);
 
 /*  Process specific SNP patterns   */
