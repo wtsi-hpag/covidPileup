@@ -24,7 +24,7 @@ The genome aligner BWA (http://bio-bwa.sourceforge.net) and SMALT (http://www.sa
              nodes:        Number of CPUs requested  [ default = 30 ]
              length:       Reference genome length [ default = 40000 ]
              cover:        Threshold coverage number to report specific SNPs  [ default = 5 o] \
-	     country:      Specific SNPs in the country [ default = UK ]
+	         country:      Specific SNPs in the country [ default = UK ]
                            "EU" and Europen countries like "France", "Italy" et al should work;
                            "UK" and "England", "Scotland", "Wales" et al should work;
              SNP:          Output 4 image files on SNP pileup [ default not plot ]
