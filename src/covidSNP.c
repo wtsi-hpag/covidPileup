@@ -388,8 +388,8 @@ int main(int argc, char **argv)
              }
              if(seq_len > 20000)
 	     {
-               printf("NUMsnp %d %s %s %d\n",num_align,seq->name,ctgname[num_align],num_SNPs);
-               fprintf(namef2,"NUMsnp %d %s %s %d\n",num_align,seq->name,ctgname[num_align],num_SNPs);
+               printf("NUMsnp %d %s %s %d %d\n",num_align,seq->name,ctgname[num_align],num_SNPs,num_GAPs);
+               fprintf(namef2,"NUMsnp %d %s %s %d %d\n",num_align,seq->name,ctgname[num_align],num_SNPs,num_GAPs);
                printf("NUMgap %d %s %s %d\n",num_align,seq->name,ctgname[num_align],num_GAPs);
                fprintf(namef2,"NUMgap %d %s %s %d\n",num_align,seq->name,ctgname[num_align],num_GAPs);
                num_align++;

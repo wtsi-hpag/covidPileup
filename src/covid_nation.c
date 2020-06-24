@@ -52,7 +52,7 @@ static int IMOD=0;
 static int n_type=0;
 static int barreads=10;
 static int file_flag=2;
-static int n_cover=10;
+static int n_cover=5;
 static int edge_set=2000;
 static int edge_flag=0;
 static int nContig=0;
@@ -83,7 +83,7 @@ int main(int argc, char **argv)
     seq=NULL;
     if(argc < 2)
     {
-      printf("Usage: %s -cover 10 -country UK <input_countryname_file> <input_SNP_file> <output_countrySNP_unique> <output_countrySNP_all>\n",argv[0]);
+      printf("Usage: %s -cover 5 -country UK <input_countryname_file> <input_SNP_file> <output_countrySNP_unique> <output_countrySNP_all>\n",argv[0]);
 
       exit(1);
     }

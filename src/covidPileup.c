@@ -62,6 +62,8 @@ static int plot_GAP = 0;
 static int min_len = 3000;
 static int sam_flag = 0;
 static int ances_flag = 0;
+static int nation_flag = 0;
+static int n_cover = 5;
 
 typedef struct
 {
@@ -94,7 +96,7 @@ int main(int argc, char **argv)
     void Memory_Allocate(int arr);
     char tempa[2000],tempc[2000],syscmd[2000],workdir[2000];
     char file_tarseq[2000],file_pileup[2000],file_snpfrq[2000],file_datas[2000],file_ctname[2000],file_ctspec[2000];
-    char file_genome[2000],file_read2[2000],samname[500],bamname[500],toolname[500],snpname[500],gapname[500];
+    char file_genome[2000],file_read2[2000],samname[500],bamname[500],toolname[500],snpname[500],gapname[500],datname[500];
     char countryname[100];
     char file_pileupSNP[2000],file_pileupGAP[2000],file_frequeSNP[2000],file_frequeGAP[2000],file_uniqueSNP[2000],file_regionSNP[2000];
     int systemRet = system (syscmd);
@@ -109,11 +111,13 @@ int main(int argc, char **argv)
          printf("Version: 1.0\n");
          printf("\n");
          
-         printf("Usage: %s -nodes 30 -length 40000 -SNP plot -GAP plot <Input_Reference> <Input_Covid-Genomes> <Output_Pileup-file>\n",argv[0]);
-         printf("       nodes    (30)    - number of CPUs requested\n");
+         printf("Usage: %s -nodes 30 -length 40000 -cover 5 -country UK <Input_Reference> <Input_Covid-Genomes> <Output_Pileup-file>\n",argv[0]);
+         printf("       nodes    (30)    - Number of CPUs requested\n");
          printf("       length   (40000) - Genome sequence length\n");
-         printf("       SNP      (plot)  - output image file on SNP pileup information\n");
-         printf("       GAP      (plot)  - output image file on GAP pileup information\n");
+         printf("       cover    (5)     - Threshold coverage number to report specific SNPs \n");
+         printf("       country  (UK)    - Specific SNPs in the country \n");
+         printf("       SNP      (plot)  - Output image file on SNP pileup information\n");
+         printf("       GAP      (plot)  - Output image file on GAP pileup information\n");
          exit(1);
     }
 
@@ -122,7 +126,7 @@ int main(int argc, char **argv)
     n_debug = 1;
 
     strcpy(toolname,"bwa");
-    strcpy(countryname,"USA");
+    strcpy(countryname,"UK");
     nSeq=0;
     args=1;
     for(i=1;i<argc;i++)
@@ -141,6 +145,12 @@ int main(int argc, char **argv)
        else if(!strcmp(argv[i],"-ancestry"))
        {
          sscanf(argv[++i],"%d",&ances_flag);
+         args=args+2;
+       }
+       else if(!strcmp(argv[i],"-data"))
+       {
+         run_align = 0;
+         sscanf(argv[++i],"%s",datname);
          args=args+2;
        }
        else if(!strcmp(argv[i],"-SNP"))
@@ -163,17 +173,24 @@ int main(int argc, char **argv)
          sscanf(argv[++i],"%d",&seq_len);
          args=args+2;
        }
+       else if(!strcmp(argv[i],"-cover"))
+       {
+         sscanf(argv[++i],"%d",&n_cover);
+         args=args+2;
+       }
        else if(!strcmp(argv[i],"-help"))
        {
          printf("Program: covidPileup -  Pileup pipeline for COVID-19 SNPs\n");
          printf("Version: 1.0\n");
          printf("\n");
          
-         printf("Usage: %s -nodes 30 -length 40000 <Input_Reference> <Input_Covid-Genomes> <Output_Pileup-file>\n",argv[0]);
-         printf("       nodes    (30)    - number of CPUs requested\n");
+         printf("Usage: %s -nodes 30 -length 40000 -cover 5 -country UK <Input_Reference> <Input_Covid-Genomes> <Output_Pileup-file>\n",argv[0]);
+         printf("       nodes    (30)    - Number of CPUs requested\n");
          printf("       length   (40000) - Genome sequence length\n");
-         printf("       SNP      (plot)  - output image file on SNP pileup information\n");
-         printf("       GAP      (plot)  - output image file on GAP pileup information\n");
+         printf("       cover    (5)     - Threshold coverage number to report specific SNPs \n");
+         printf("       country  (UK)    - Specific SNPs in the country \n");
+         printf("       SNP      (plot)  - Output image file on SNP pileup information\n");
+         printf("       GAP      (plot)  - Output image file on GAP pileup information\n");
          exit(1);
        }
        else if(!strcmp(argv[i],"-debug"))
@@ -194,6 +211,11 @@ int main(int argc, char **argv)
       plot_SNP = 1;
     if(strncmp(gapname,"plot",4) == 0)
       plot_GAP = 1;
+
+    nation_flag = 1;
+    if((strcmp(countryname,"UK")==0)||(strcmp(countryname,"USA")==0)||(strcmp(countryname,"EU")==0))
+      nation_flag = 0;
+ 
     pid = getpid();
     memset(tempa,'\0',2000);
     if (!getcwd(tempa, sizeof(tempa)))
@@ -229,6 +251,7 @@ int main(int argc, char **argv)
     memset(file_snpfrq,'\0',2000);
     memset(file_ctspec,'\0',2000);
     memset(file_ctname,'\0',2000);
+    memset(file_datas,'\0',2000);
 
     sprintf(file_tarseq,"%s/%s",tempa,argv[args]);
     sprintf(file_genome,"%s/%s",tempa,argv[args+1]);
@@ -263,57 +286,64 @@ int main(int argc, char **argv)
       printf("Input target assembly file2: %s\n",file_tarseq);
     } 
 
-   if((namef = fopen(file_genome,"r")) == NULL)
-   {
-     printf("File not in the working directory!\n");
-     if((namef = fopen(argv[args+1],"r")) == NULL)
-     {
-       printf("File %s not found and please copy it to your working directory!\n",argv[args+1]);
-       exit(1);
-     }
-     else
-     {
-       memset(file_genome,'\0',2000);
-       strcpy(file_genome,argv[args+1]);
-       printf("Input read1 file: %s\n",file_genome);
-     }
-   }
-   else
-   {
-     printf("Input read1 file: %s\n",file_genome);
-   } 
-
-
-    memset(syscmd,'\0',2000);
-    sprintf(syscmd,"%s/covid_fastq -name tarseq -len 20000 %s tarseq.fastq tarseq.tag > try.out",bindir,file_tarseq);
-
-    RunSystemCommand(syscmd);
-   
-    if((strcmp(toolname,"bwa") == 0))
-    { 
-      memset(syscmd,'\0',2000);
-      sprintf(syscmd,"%s/bwa index tarseq.fastq > try.out",bindir);
-      RunSystemCommand(syscmd);
-
-      memset(syscmd,'\0',2000);
-      sprintf(syscmd,"%s/bwa mem -t %d tarseq.fastq %s | egrep tarseq_ | awk '%s' | egrep -v '^@' > align.dat",bindir,n_nodes,file_genome,"($2<100){print $1,$2,$3,$4,$5,$6,$10}");
-      RunSystemCommand(syscmd);
-    }
-    else if((strcmp(toolname,"smalt") == 0))
+    if((namef = fopen(file_genome,"r")) == NULL)
     {
-      memset(syscmd,'\0',2000);
-      sprintf(syscmd,"%s/smalt index -k 13 -k 13 hash_genome tarseq.fastq > try.out",bindir);
-      RunSystemCommand(syscmd);
-
-      memset(syscmd,'\0',2000);
-      sprintf(syscmd,"%s/smalt map -n %d -m 100 -f samsoft -O hash_genome %s | egrep tarseq_ | awk '%s' | egrep -v '^@' > align.dat",bindir,n_nodes,file_genome,"($2<100){print $1,$2,$3,$4,$5,$6,$10}");
-      RunSystemCommand(syscmd);
+      printf("File not in the working directory!\n");
+      if((namef = fopen(argv[args+1],"r")) == NULL)
+      {
+        printf("File %s not found and please copy it to your working directory!\n",argv[args+1]);
+        exit(1);
+      }
+      else
+      {
+        memset(file_genome,'\0',2000);
+        strcpy(file_genome,argv[args+1]);
+        printf("Input read1 file: %s\n",file_genome);
+      }
     }
     else
     {
-      printf("Give an alignment tool! \n");
-      exit(1);
+      printf("Input read1 file: %s\n",file_genome);
     }
+
+    memset(syscmd,'\0',2000);
+    sprintf(syscmd,"%s/covid_fastq -name tarseq -len 20000 %s tarseq.fastq tarseq.tag > try.out",bindir,file_tarseq);
+    RunSystemCommand(syscmd);
+   
+    if(run_align)
+    {
+      if((strcmp(toolname,"bwa") == 0))
+      { 
+        memset(syscmd,'\0',2000);
+        sprintf(syscmd,"%s/bwa index tarseq.fastq > try.out",bindir);
+        RunSystemCommand(syscmd);
+
+        memset(syscmd,'\0',2000);
+        sprintf(syscmd,"%s/bwa mem -t %d tarseq.fastq %s | egrep tarseq_ | awk '%s' | egrep -v '^@' > align.dat",bindir,n_nodes,file_genome,"($2<100){print $1,$2,$3,$4,$5,$6,$10}");
+        RunSystemCommand(syscmd);
+      }
+      else if((strcmp(toolname,"smalt") == 0))
+      {
+        memset(syscmd,'\0',2000);
+        sprintf(syscmd,"%s/smalt index -k 13 -k 13 hash_genome tarseq.fastq > try.out",bindir);
+        RunSystemCommand(syscmd);
+
+        memset(syscmd,'\0',2000);
+        sprintf(syscmd,"%s/smalt map -n %d -m 100 -f samsoft -O hash_genome %s | egrep tarseq_ | awk '%s' | egrep -v '^@' > align.dat",bindir,n_nodes,file_genome,"($2<100){print $1,$2,$3,$4,$5,$6,$10}");
+        RunSystemCommand(syscmd);
+      }
+      else
+      {
+        printf("Give an alignment tool! \n");
+        exit(1);
+      }
+    }
+    else
+    {
+      memset(syscmd,'\0',2000);
+      sprintf(syscmd,"cp %s align.dat",datname);
+      RunSystemCommand(syscmd);
+    } 
 
     memset(syscmd,'\0',2000);
     printf("%s/covidSNP -length %d tarseq.fastq align.dat pileup.dat > try.out",bindir,seq_len);
@@ -323,7 +353,7 @@ int main(int argc, char **argv)
 /*  Process specific SNP patterns   */
     
     memset(syscmd,'\0',2000);
-    sprintf(syscmd,"cat align.dat | awk '{print $1}' > name.dat");
+    sprintf(syscmd,"cat align.dat | awk '{print $1}' | sort > name.dat");
     RunSystemCommand(syscmd);
 
     memset(syscmd,'\0',2000);
@@ -335,7 +365,7 @@ int main(int argc, char **argv)
     RunSystemCommand(syscmd);
 
     memset(syscmd,'\0',2000);
-    sprintf(syscmd,"%s/covid_nation -country %s country.dat snp-sort.dat country.spec country.snps > try.out",bindir,countryname);
+    sprintf(syscmd,"%s/covid_nation -country %s -cover %d country.dat snp-sort.dat country.spec country.snps > try.out",bindir,countryname,n_cover);
     RunSystemCommand(syscmd);
 
     memset(syscmd,'\0',2000);
@@ -426,15 +456,15 @@ int main(int argc, char **argv)
       RunSystemCommand(syscmd);
 
       memset(syscmd,'\0',2000);
-      sprintf(syscmd,"%s/covid_nation -country USA country.dat snp-sort.dat snp-usa-uniq.dat snp-usa-all.dat > try.out",bindir);
+      sprintf(syscmd,"%s/covid_nation -country USA -cover %d country.dat snp-sort.dat snp-usa-uniq.dat snp-usa-all.dat > try.out",bindir,n_cover);
       RunSystemCommand(syscmd);
 
       memset(syscmd,'\0',2000);
-      sprintf(syscmd,"%s/covid_nation -country UK country.dat snp-sort.dat snp-uk-uniq.dat snp-uk-all.dat > try.out",bindir);
+      sprintf(syscmd,"%s/covid_nation -country UK -cover %d country.dat snp-sort.dat snp-uk-uniq.dat snp-uk-all.dat > try.out",bindir,n_cover);
       RunSystemCommand(syscmd);
 
       memset(syscmd,'\0',2000);
-      sprintf(syscmd,"%s/covid_nation -country EU country.dat snp-sort.dat snp-eu-uniq.dat snp-eu-all.dat > try.out",bindir);
+      sprintf(syscmd,"%s/covid_nation -country EU -cover %d country.dat snp-sort.dat snp-eu-uniq.dat snp-eu-all.dat > try.out",bindir,n_cover);
       RunSystemCommand(syscmd);
 
       memset(syscmd,'\0',2000);
@@ -461,29 +491,70 @@ int main(int argc, char **argv)
       sprintf(syscmd,"egrep All_ snp-usa-all.dat | awk '{print $3,$5}' > country-usa.dat");
       RunSystemCommand(syscmd);
 
-      memset(syscmd,'\0',2000);
-      sprintf(syscmd,"%s/covid_comms -plot 5 frequeSNP.dat plot-uniqueSNP.sh > try.out",bindir);
-      RunSystemCommand(syscmd);
+      if(nation_flag == 0)
+      {
+        memset(syscmd,'\0',2000);
+        sprintf(syscmd,"%s/covid_comms -plot 5 frequeSNP.dat plot-uniqueSNP.sh > try.out",bindir);
+        RunSystemCommand(syscmd);
 
-      memset(syscmd,'\0',2000);
-      sprintf(syscmd,"bash plot-uniqueSNP.sh");
-      RunSystemCommand(syscmd);
+        memset(syscmd,'\0',2000);
+        sprintf(syscmd,"bash plot-uniqueSNP.sh");
+        RunSystemCommand(syscmd);
 
-      memset(syscmd,'\0',2000);
-      sprintf(syscmd,"mv data.png %s ",file_uniqueSNP);
-      RunSystemCommand(syscmd);
+        memset(syscmd,'\0',2000);
+        sprintf(syscmd,"mv data.png %s ",file_uniqueSNP);
+        RunSystemCommand(syscmd);
 
-      memset(syscmd,'\0',2000);
-      sprintf(syscmd,"%s/covid_comms -plot 6 frequeSNP.dat plot-regionSNP.sh > try.out",bindir);
-      RunSystemCommand(syscmd);
+        memset(syscmd,'\0',2000);
+        sprintf(syscmd,"%s/covid_comms -plot 6 frequeSNP.dat plot-regionSNP.sh > try.out",bindir);
+        RunSystemCommand(syscmd);
 
-      memset(syscmd,'\0',2000);
-      sprintf(syscmd,"bash plot-regionSNP.sh");
-      RunSystemCommand(syscmd);
+        memset(syscmd,'\0',2000);
+        sprintf(syscmd,"bash plot-regionSNP.sh");
+        RunSystemCommand(syscmd);
 
-      memset(syscmd,'\0',2000);
-      sprintf(syscmd,"mv data.png %s ",file_regionSNP);
-      RunSystemCommand(syscmd);
+        memset(syscmd,'\0',2000);
+        sprintf(syscmd,"mv data.png %s ",file_regionSNP);
+        RunSystemCommand(syscmd);
+      }
+      else
+      {
+        memset(syscmd,'\0',2000);
+        sprintf(syscmd,"%s/covid_nation -country %s -cover %d country.dat snp-sort.dat snp-sm-uniq.dat snp-sm-all.dat > try.out",bindir,countryname,n_cover);
+        RunSystemCommand(syscmd);
+
+        memset(syscmd,'\0',2000);
+        sprintf(syscmd,"egrep Uniq_ snp-sm-uniq.dat | awk '{print $3,$5}' > uniqsnp-sm.dat");
+        RunSystemCommand(syscmd);
+
+        memset(syscmd,'\0',2000);
+        sprintf(syscmd,"egrep All_ snp-sm-all.dat | awk '{print $3,$5}' > country-sm.dat");
+        RunSystemCommand(syscmd);
+
+        memset(syscmd,'\0',2000);
+        sprintf(syscmd,"%s/covid_comms -plot 7 -country %s frequeSNP.dat plot-uniqueSNP.sh > try.out",bindir,countryname);
+        RunSystemCommand(syscmd);
+
+        memset(syscmd,'\0',2000);
+        sprintf(syscmd,"bash plot-uniqueSNP.sh");
+        RunSystemCommand(syscmd);
+
+        memset(syscmd,'\0',2000);
+        sprintf(syscmd,"mv data.png %s ",file_uniqueSNP);
+        RunSystemCommand(syscmd);
+
+        memset(syscmd,'\0',2000);
+        sprintf(syscmd,"%s/covid_comms -plot 8 -country %s frequeSNP.dat plot-regionSNP.sh > try.out",bindir,countryname);
+        RunSystemCommand(syscmd);
+
+        memset(syscmd,'\0',2000);
+        sprintf(syscmd,"bash plot-regionSNP.sh");
+        RunSystemCommand(syscmd);
+
+        memset(syscmd,'\0',2000);
+        sprintf(syscmd,"mv data.png %s ",file_regionSNP);
+        RunSystemCommand(syscmd);
+      }
     }
     
     if(plot_GAP == 1)

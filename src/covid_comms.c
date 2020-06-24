@@ -39,8 +39,8 @@ int main(int argc, char **argv)
 {
     int i=0,j=0,k,args=0,num_steps,nSeq,nRead,num_samples;
     int *s_len,BAR = 0,nstep = 0,stopflag;
-    char line[500],tempc1[100];
-    char KKK1[100],KKK2[100],KKK3[100],KKK4[100],KKK5[100],KKK6[100],KKK7[100],KKK0[100];
+    char line[500],tempc1[100],countryname[100];
+    char KKK1[100],KKK2[100],KKK3[100],KKK4[100],KKK5[100],KKK6[100],KKK7[100],KKK0[100],KKKx[100];
     FILE *namef;
     long num_base,base;
     double rate;
@@ -51,6 +51,7 @@ int main(int argc, char **argv)
       exit(1);
     }
 
+    strcpy(countryname,"UK");
     nSeq=0;
     args=1;
     for(i=1;i<argc;i++)
@@ -63,6 +64,11 @@ int main(int argc, char **argv)
        else if(!strcmp(argv[i],"-plot"))
        {
          sscanf(argv[++i],"%d",&plot_flag);
+         args=args+2;
+       }
+       else if(!strcmp(argv[i],"-country"))
+       {
+         sscanf(argv[++i],"%s",countryname);
          args=args+2;
        }
     }
@@ -256,6 +262,68 @@ int main(int argc, char **argv)
       fprintf(namef,"printf \"%s\\n\"\n",KKK5);
       fprintf(namef,"printf \"%s\\n\"\n",KKK6);
       fprintf(namef,"printf \"%s \\\"%s\\\" title \\\"%s \\\" %s\\\"%s\\\" title \\\"%s\\\" %s\\\"%s\\\" title \\\"%s\\\" %s\"\n",KKK7,"country-usa.dat","Country SNPs - USA","with points ls 1,","country-uk.dat","Country SNPs - UK "," with points ls 2,","country-eu.dat","Country SNPs - EU ","with points ls 3");
+      fprintf(namef,"}\n");
+      fprintf(namef,"plotcmd | gnuplot > data.svg\n");
+      fprintf(namef,"inkscape -z --export-text-to-path --export-pdf data.pdf data.svg\n");
+      fprintf(namef,"gs -r600 -dNOPAUSE -dBATCH -sDEVICE=png256 -sOutputFile=%s.png data.pdf\n","data");
+      fprintf(namef,"\n"); 
+      fprintf(namef,"\n");
+    }
+    else if(plot_flag == 7)
+    {
+      strcpy(KKK0,"set terminal svg"); 
+      strcpy(KKK2,"set style line 1 lt 1 lw 1 pt 5 linecolor rgb \\\"red\\\"");     
+      strcpy(KKK3,"set style line 2 lt 1 lw 1 pt 7 linecolor rgb \\\"blue\\\"");     
+      strcpy(KKK4,"set style line 3 lt 1 lw 1 pt 9 linecolor rgb \\\"green\\\"");     
+      strcpy(KKKx,"set style line 4 lt 1 lw 1 pt 10 linecolor rgb \\\"violet\\\"");     
+      strcpy(KKK5,"set xlabel \\\"COVID-19 genome coordinates\\\"");     
+      strcpy(KKK6,"set ylabel \\\"Unique SNPs - Number of Samples\\\"");     
+      strcpy(KKK7,"plot [ 0 to 30000 ] [ 1 to 100 ]");
+ 
+      fprintf(namef,"#!/bin/bash\n");
+      fprintf(namef,"\n"); 
+      fprintf(namef,"function plotcmd\n");
+      fprintf(namef,"\{\n"); 
+      fprintf(namef,"printf \"%s\\n\"\n",KKK0);
+//      fprintf(namef,"printf \"%s\\n\"\n",KKK1);
+      fprintf(namef,"printf \"%s\\n\"\n",KKK2);
+      fprintf(namef,"printf \"%s\\n\"\n",KKK3);
+      fprintf(namef,"printf \"%s\\n\"\n",KKK4);
+      fprintf(namef,"printf \"%s\\n\"\n",KKKx);
+      fprintf(namef,"printf \"%s\\n\"\n",KKK5);
+      fprintf(namef,"printf \"%s\\n\"\n",KKK6);
+      fprintf(namef,"printf \"%s \\\"%s\\\" title \\\"%s \\\" %s\\\"%s\\\" title \\\"%s\\\" %s\\\"%s\\\" title \\\"%s\\\" %s\\\"%s\\\" title \\\"%s\%s\\\" %s\"\n",KKK7,"uniqsnp-usa.dat","Unique SNPs - USA","with points ls 1,","uniqsnp-uk.dat","Unique SNPs - UK "," with points ls 2,","uniqsnp-eu.dat","Unique SNPs - EU ","with points ls 3,","uniqsnp-sm.dat","Unique SNPs - ",countryname," with points ls 4");
+      fprintf(namef,"}\n");
+      fprintf(namef,"plotcmd | gnuplot > data.svg\n");
+      fprintf(namef,"inkscape -z --export-text-to-path --export-pdf data.pdf data.svg\n");
+      fprintf(namef,"gs -r600 -dNOPAUSE -dBATCH -sDEVICE=png256 -sOutputFile=%s.png data.pdf\n","data");
+      fprintf(namef,"\n"); 
+      fprintf(namef,"\n");
+    }
+    else if(plot_flag == 8)
+    {
+      strcpy(KKK0,"set terminal svg"); 
+      strcpy(KKK2,"set style line 1 lt 1 lw 1 pt 5 linecolor rgb \\\"red\\\"");     
+      strcpy(KKK3,"set style line 2 lt 1 lw 1 pt 7 linecolor rgb \\\"blue\\\"");     
+      strcpy(KKK4,"set style line 3 lt 1 lw 1 pt 9 linecolor rgb \\\"green\\\"");     
+      strcpy(KKKx,"set style line 4 lt 1 lw 1 pt 10 linecolor rgb \\\"violet\\\"");     
+      strcpy(KKK5,"set xlabel \\\"COVID-19 genome coordinates\\\"");     
+      strcpy(KKK6,"set ylabel \\\"Country SNPs - Number of Samples\\\"");     
+      strcpy(KKK7,"plot [ 0 to 30000 ] [ 1 to 500 ]");
+ 
+      fprintf(namef,"#!/bin/bash\n");
+      fprintf(namef,"\n"); 
+      fprintf(namef,"function plotcmd\n");
+      fprintf(namef,"\{\n"); 
+      fprintf(namef,"printf \"%s\\n\"\n",KKK0);
+//      fprintf(namef,"printf \"%s\\n\"\n",KKK1);
+      fprintf(namef,"printf \"%s\\n\"\n",KKK2);
+      fprintf(namef,"printf \"%s\\n\"\n",KKK3);
+      fprintf(namef,"printf \"%s\\n\"\n",KKK4);
+      fprintf(namef,"printf \"%s\\n\"\n",KKKx);
+      fprintf(namef,"printf \"%s\\n\"\n",KKK5);
+      fprintf(namef,"printf \"%s\\n\"\n",KKK6);
+      fprintf(namef,"printf \"%s \\\"%s\\\" title \\\"%s \\\" %s\\\"%s\\\" title \\\"%s\\\" %s\\\"%s\\\" title \\\"%s\\\" %s\\\"%s\\\" title \\\"%s\%s\\\" %s\"\n",KKK7,"country-usa.dat","Country SNPs - USA","with points ls 1,","country-uk.dat","Country SNPs - UK "," with points ls 2,","country-eu.dat","Country SNPs - EU ","with points ls 3,","country-sm.dat","Country SNPs - ",countryname," with points ls 4");
       fprintf(namef,"}\n");
       fprintf(namef,"plotcmd | gnuplot > data.svg\n");
       fprintf(namef,"inkscape -z --export-text-to-path --export-pdf data.pdf data.svg\n");

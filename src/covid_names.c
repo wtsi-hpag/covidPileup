@@ -119,7 +119,7 @@ int main(int argc, char **argv)
     }
     fclose(namef); 
 
-    if((hit_index = (int *)calloc(nseq,sizeof(int))) == NULL)
+    if((hit_index = (int *)calloc(nseq+10,sizeof(int))) == NULL)
     {
       printf("fmate: calloc - hit_index\n");
       exit(1);
@@ -140,6 +140,7 @@ int main(int argc, char **argv)
         st = rdname;
         ed = strchr(rdname,'/');
         strncpy(R_Name[i],rdname,ed-st);
+//       printf("Name: %d %s %s\n",i,rdname,R_Name[i]);
         i++;
     }
     fclose(namef);
@@ -147,7 +148,7 @@ int main(int argc, char **argv)
     for(i=0;i<nseq;i++)
        hit_index[i] = i;
 
-    ArraySort_String(nseq,R_Name,hit_index);
+//    ArraySort_String(nseq,R_Name,hit_index);
 
     if((namef = fopen(argv[args+1],"w")) == NULL)
     {
@@ -170,7 +171,7 @@ int main(int argc, char **argv)
        }
        n = j-i;
        num_hits++;
-//       printf("Name: %d %s\n",n,R_Name[i]);
+       printf("Name: %d %s\n",n,R_Name[i]);
        fprintf(namef,"%d %d %s\n",num_hits,n,R_Name[i]);
        i = j - 1;
     }
