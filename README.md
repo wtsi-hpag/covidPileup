@@ -55,5 +55,19 @@ or using SMALT
      USA/WA-UW-4032/2020
      England/20124095202/2020
  
+#### Start a new run without doing the alignment 
+       The aligner SMALT is much slower than BWA, but it offers better alignments for those sequences \
+       (1) with a lot of "N"s; (2) lower similarity with the reference such as bats or pangolins \
+       If you had made a run previously with a temporary directory:       \ 
 
+          /lustre/team117/zn1/project/covid/tmp_rununik_71885/            \
+
+       You may use the already existing alignment file to save time:      \
+  
+           $ /full/path/to/covidPileup/src/covidPileup -nodes <nodes> -SNP <plot> -GAP <plot> \
+		 -country <country_name> -cover <n_cover> -length <reference_length> \
+                 -data /lustre/team117/zn1/project/covid/tmp_rununik_71885/align.dat \
+                 reference.fasta COVID-19_genomes.fasta sample-pileup
+
+       Note: "-data ?" expects a full path.
 
