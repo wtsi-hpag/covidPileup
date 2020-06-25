@@ -57,7 +57,7 @@ or using SMALT
  
 #### Start a new run without doing the alignment 
        The aligner SMALT is much slower than BWA, but it offers better alignments for sequences \
-       (1) with a lot of "N"s; (2) lower similarity with the reference such as bats or pangolins \
+       (1) with a lot of "N"s; (2) lower sequence similarity such as bats or pangolins \
        Personally, I would recommend SMALT, which takes 2-3 hours with 60 CPUs for 50K genomes.
 
        If you had made a run previously with a temporary directory:       \ 
