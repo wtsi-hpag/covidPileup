@@ -7,7 +7,7 @@
  *                                                                          *
  *  This file is part of covidPileup pipeline.                              *
  *                                                                          *
- *  Scaff10x is a free software: you can redistribute it and/or modify it   *
+ *  covidPileup is a free software: you can redistribute it and/or modify it*
  *  under the terms of the GNU General Public License as published by the   *
  *  Free Software Foundation, either version 3 of the License, or (at your  *
  *  option) any later version.                                              *
@@ -186,7 +186,7 @@ int main(int argc, char **argv)
     }
     fclose(namef); 
 
-    g_size = 30000;
+    g_size = 40000;
     if((snp_index = (int *)calloc(n_SNPs,sizeof(int))) == NULL)
     {
       printf("fmate: calloc - snp_index\n");
@@ -228,6 +228,7 @@ int main(int argc, char **argv)
       exit(1);
     }
 
+    printf("Here \n");
 /*  read the alignment files         */
     i=0;
     while(fscanf(namef,"%s %d %s %d %s %s %s",tempc1,&snp_index[i],tempc1,&snp_locus[i],S_Name[i],tempc1,tempc1)!=EOF)
@@ -413,6 +414,9 @@ int main(int argc, char **argv)
     for(i=1;i<g_size;i++)
        cod_head[i] = cod_head[i-1] + cod_list[i-1];
 
+
+    for(i=0;i<30000;i++)
+       printf("Cod: %d %d %d \n",i,cod_list[i],cod_head[i]);
     n_pileup = 0;
     for(i=0;i<g_size;i++)
     {
@@ -438,6 +442,7 @@ int main(int argc, char **argv)
       exit(1);
     }
 
+    printf("Here 2 \n");
 /*  read the alignment files         */
     i=0;
     while(fscanf(namef,"%s %d %s %d %s %s %s",tempc1,&snp_index[i],tempc1,&snp_locus[i],S_Name[i],tempc1,tempc1)!=EOF)
@@ -447,16 +452,18 @@ int main(int argc, char **argv)
         memset(rdname,'\0',100);
         strncpy(rdname,S_Name[i],ed-st);
 
-//             printf("Nation: %d %s %s\n",i,rdname,R_Name[0]);
         if(strcmp(countryname,"UK")==0)
         {
           if((strcmp(rdname,"England")==0)||(strcmp(rdname,"Scotland")==0)||(strcmp(rdname,"Wales")==0)||(strcmp(rdname,"NorthernIreland")==0))
           {
+             printf("Nation: %d %s %s %d %d %d\n",i,rdname,S_Name[i],snp_index[i],snp_locus[i],i_country);
             int idt = cod_head[snp_locus[i]]+snp_head[snp_locus[i]][i_country]+snp_list[snp_locus[i]][i_country];
+          printf("Nation1: %d %s %s %d || %d %d %d\n",idt,rdname,S_Name[i],snp_locus[i],cod_head[snp_locus[i]],snp_head[snp_locus[i]][i_country],snp_list[snp_locus[i]][i_country]);
             hit_index[idt] = i;
+          printf("Nation2: %d %s %s %d\n",j,rdname,S_Name[i],snp_locus[i]);
             snp_list[snp_locus[i]][i_country]++;
             cod_list[snp_locus[i]]++;
-//          printf("Nation: %d %s %s %d\n",j,rdname,S_Name[i],snp_locus[i]);
+          printf("Nation3: %d %s %s %d\n",j,rdname,S_Name[i],snp_locus[i]);
           }
           else
           {

@@ -7,7 +7,7 @@
  *                                                                          *
  *  This file is part of covidPileup pipeline.                              *
  *                                                                          *
- *  Scaff10x is a free software: you can redistribute it and/or modify it   *
+ *  covidPileup is a free software: you can redistribute it and/or modify it*
  *  under the terms of the GNU General Public License as published by the   *
  *  Free Software Foundation, either version 3 of the License, or (at your  *
  *  option) any later version.                                              *
@@ -43,7 +43,7 @@
 #define PADCHAR '-'
 #define MAX_N_BRG 50000 
 #define MAX_N_ROW 50000 
-#define Max_N_NameBase 20
+#define Max_N_NameBase 60
 static char **S_Name,**R_Name,**T_Name,**M_Name;
 static int *hit_locus,*hit_length;
 
@@ -139,8 +139,8 @@ int main(int argc, char **argv)
     {
         st = rdname;
         ed = strchr(rdname,'/');
-        strncpy(R_Name[i],rdname,ed-st);
-//       printf("Name: %d %s %s\n",i,rdname,R_Name[i]);
+	if(ed != NULL)
+          strncpy(R_Name[i],rdname,ed-st);
         i++;
     }
     fclose(namef);
@@ -148,7 +148,7 @@ int main(int argc, char **argv)
     for(i=0;i<nseq;i++)
        hit_index[i] = i;
 
-//    ArraySort_String(nseq,R_Name,hit_index);
+    ArraySort_String(nseq,R_Name,hit_index);
 
     if((namef = fopen(argv[args+1],"w")) == NULL)
     {
